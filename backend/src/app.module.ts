@@ -7,6 +7,7 @@ import { AppService } from './app.service';
 @Module({
   imports: [
     ConfigModule.forRoot(),
+    // Task 3: PostgreSQL connection setup
 
     TypeOrmModule.forRoot({
       type: 'postgres',
