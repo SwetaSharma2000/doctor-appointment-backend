@@ -8,7 +8,9 @@ import { User } from './entities/user.entity';
 import { Doctor } from './entities/doctor.entity';
 import { DoctorsModule } from './doctors/doctors.module';
 import { Patient } from './entities/patient.entity';
+import { DoctorAvailability } from './entities/doctor-availability.entity';  
 import { PatientsModule } from './patients/patients.module';
+
 
 
 @Module({
@@ -24,8 +26,8 @@ import { PatientsModule } from './patients/patients.module';
       port: Number(process.env.DB_PORT),
       username: process.env.DB_USER,
       password: process.env.DB_PASS,
-      database: process.env.DB_NAME,
-      entities: [User,Doctor,Patient],
+      database: process.env.DB_NAME, 
+      entities: [User,Doctor,Patient,DoctorAvailability],
       synchronize: true,
     }),
     AuthModule,
