@@ -10,6 +10,8 @@ import { DoctorsModule } from './doctors/doctors.module';
 import { Patient } from './entities/patient.entity';
 import { DoctorAvailability } from './entities/doctor-availability.entity';  
 import { PatientsModule } from './patients/patients.module';
+import { Appointment } from './entities/appointment.entity';
+import { AppointmentsModule } from './appointments/appointments.module';
 
 
 
@@ -21,18 +23,25 @@ import { PatientsModule } from './patients/patients.module';
     // Task 3: PostgreSQL connection setup
 
     TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: process.env.DB_HOST,
-      port: Number(process.env.DB_PORT),
-      username: process.env.DB_USER,
-      password: process.env.DB_PASS,
-      database: process.env.DB_NAME, 
-      entities: [User,Doctor,Patient,DoctorAvailability],
-      synchronize: true,
+     type: 'postgres',
+     url: process.env.DATABASE_URL || undefined,
+
+    host: process.env.DATABASE_URL ? undefined : process.env.DB_HOST,
+    port: process.env.DATABASE_URL ? undefined : Number(process.env.DB_PORT),
+    username: process.env.DATABASE_URL ? undefined : process.env.DB_USER,
+    password: process.env.DATABASE_URL ? undefined : process.env.DB_PASS,
+    database: process.env.DATABASE_URL ? undefined : process.env.DB_NAME,
+
+  entities: [User, Doctor, Patient, DoctorAvailability, Appointment],
+  synchronize: true,
+  ssl: process.env.DATABASE_URL
+    ? { rejectUnauthorized: false }
+    : false,
     }),
     AuthModule,
     DoctorsModule,
     PatientsModule,
+    AppointmentsModule, 
   ],
   controllers: [AppController],
   providers: [AppService],

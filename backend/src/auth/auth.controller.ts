@@ -85,7 +85,7 @@ export class AuthController {
         code,
         client_id: process.env.GOOGLE_CLIENT_ID,
         client_secret: process.env.GOOGLE_CLIENT_SECRET,
-        redirect_uri: 'http://localhost:3000/auth/google/callback',
+        redirect_uri: process.env.GOOGLE_CALLBACK_URL || 'http://localhost:3000/auth/google/callback',
         grant_type: 'authorization_code',
       }),
     });
@@ -110,4 +110,4 @@ export class AuthController {
 
     return res.json(result);
   }
-}  
+}   
