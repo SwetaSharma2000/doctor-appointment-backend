@@ -64,7 +64,7 @@ export class AuthController {
     
     const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
       `client_id=${process.env.GOOGLE_CLIENT_ID}` +
-      `&redirect_uri=http://localhost:3000/auth/google/callback` +
+      `&redirect_uri=${process.env.GOOGLE_CALLBACK_URL}` +
       `&response_type=code` +
       `&scope=email profile` +
       `&prompt=select_account` +
@@ -75,6 +75,9 @@ export class AuthController {
 
   @Get('google/callback')
   async googleAuthCallback(@Query('code') code: string, @Query('state') state: string, @Res() res: Response) {
+    if (!state) {
+  throw new BadRequestException('Missing state');
+  }
     const decodedState = JSON.parse(Buffer.from(state, 'base64').toString());
     const role = decodedState.role || 'patient';
 
