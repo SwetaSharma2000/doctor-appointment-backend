@@ -164,14 +164,67 @@ export class AuthService {
     where: { email } 
   });
 
+  // if (user) {
+  //   // EXISTING USER - Update role if different
+  //   if (user.role !== role) {
+  //     console.log(`Updating role for ${email} from ${user.role} to ${role}`);
+  //     user.role = role;
+  //     await this.userRepository.save(user);
+  //   }
+  // } 
+
+
+
   if (user) {
-    // EXISTING USER - Update role if different
-    if (user.role !== role) {
-      console.log(`Updating role for ${email} from ${user.role} to ${role}`);
-      user.role = role;
-      await this.userRepository.save(user);
+  // EXISTING USER
+  if (user.role !== role) {
+    console.log(`Updating role for ${email} from ${user.role} to ${role}`);
+    user.role = role;
+    await this.userRepository.save(user);
+  }
+
+  // 🔥 Ensure profile exists for role
+  if (role === 'doctor') {
+    const existingDoctor = await this.doctorRepository.findOne({
+      where: { user_id: user.user_id },
+    });
+
+    if (!existingDoctor) {
+      const doctor = this.doctorRepository.create({
+        user_id: user.user_id,
+        name: user.name,
+        specialization: null,
+        experience_years: 0,
+        is_verified: false,
+        verification_status: 'pending',
+        is_available: false,
+      });
+
+      await this.doctorRepository.save(doctor);
     }
-  } else {
+  }
+
+  if (role === 'patient') {
+    const existingPatient = await this.patientRepository.findOne({
+      where: { user_id: user.user_id },
+    });
+
+    if (!existingPatient) {
+      const patient = this.patientRepository.create({
+        user_id: user.user_id,
+        name: user.name,
+        age: null,
+        gender: null,
+        weight: null,
+        relation: 'self',
+      });
+
+      await this.patientRepository.save(patient);
+    }
+  }
+}
+  
+  else {
     // NEW USER - create account
     console.log('Creating new user:', email, 'with role:', role);
     
